@@ -8,6 +8,6 @@ package helicopter.simulator;
  *
  * @author jmdarling
  */
-public class ProgramState {
+public class Game {
 
 }

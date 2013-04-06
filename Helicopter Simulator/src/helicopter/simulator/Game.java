@@ -6,23 +6,19 @@ package helicopter.simulator;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
 
 /**
  *
  * @author jmdarling
  */
-class Game extends JFrame implements KeyListener {
-
+class Game implements KeyListener {
+  Simulation simulation;
   /**
    * Starts the game.
    *
    */
   public void start() {
-      JTextField keyText = new JTextField(80);
-      JLabel keyLabel = new JLabel("Press any key");
+      simulation = new Simulation();
   }
 
 
@@ -39,7 +35,8 @@ class Game extends JFrame implements KeyListener {
   }
 
   /**
-   * Listens for a key being pressed.
+   * Listens for a key being pressed. Sends the corresponding motion to update
+   * the helicopter's position.
    *
    * @param ke The key event being input.
    *
@@ -50,55 +47,74 @@ class Game extends JFrame implements KeyListener {
 
     switch(keyPressed) {
       case 87: // W: Forward
+        simulation.update(Simulation.ACCEL_FORWARD,
+                Simulation.MOVE_NONE,
+                Simulation.MOVE_NONE,
+                Simulation.TURN_NONE);
         break;
       case 65: // A: Rotate Counter Clockwise
+        simulation.update(Simulation.ACCEL_NONE,
+                Simulation.MOVE_NONE,
+                Simulation.MOVE_NONE,
+                Simulation.TURN_LEFT);
         break;
       case 83: // S: Rotate Clockwise
+        simulation.update(Simulation.ACCEL_NONE,
+                Simulation.MOVE_NONE,
+                Simulation.MOVE_NONE,
+                Simulation.TURN_RIGHT);
         break;
       case 68: // D: Backward
+        simulation.update(Simulation.ACCEL_BACK,
+                Simulation.MOVE_NONE,
+                Simulation.MOVE_NONE,
+                Simulation.TURN_NONE);
         break;
       case 81: // Q: Strafe Left
+        simulation.update(Simulation.ACCEL_NONE,
+                Simulation.MOVE_LEFT,
+                Simulation.MOVE_NONE,
+                Simulation.TURN_NONE);
         break;
       case 69: // E: Strafe Right
+        simulation.update(Simulation.ACCEL_NONE,
+                Simulation.MOVE_RIGHT,
+                Simulation.MOVE_NONE,
+                Simulation.TURN_NONE);
         break;
       case 16: // Shift: Increase Altitude
+        simulation.update(Simulation.ACCEL_NONE,
+                Simulation.MOVE_NONE,
+                Simulation.MOVE_UP,
+                Simulation.TURN_NONE);
         break;
       case 17: // Control: Decrease Altitude
+        simulation.update(Simulation.ACCEL_NONE,
+                Simulation.MOVE_NONE,
+                Simulation.MOVE_DOWN,
+                Simulation.TURN_NONE);
         break;
       default:
+        simulation.update(Simulation.ACCEL_NONE,
+                Simulation.MOVE_NONE,
+                Simulation.MOVE_NONE,
+                Simulation.TURN_NONE);
         break;
     }
   }
 
   /**
-   * Listens for a key being released.
+   * Listens for a key being released. Sends the corresponding motion to update
+   * the helicopter's position.
    *
    * @param ke The key event being input.
    *
    */
   @Override
   public void keyReleased(KeyEvent ke) {
-    int keyReleased = ke.getKeyCode();
-
-    switch(keyReleased) {
-      case 87: // W: Forward
-        break;
-      case 65: // A: Rotate Counter Clockwise
-        break;
-      case 83: // S: Rotate Clockwise
-        break;
-      case 68: // D: Backward
-        break;
-      case 81: // Q: Strafe Left
-        break;
-      case 69: // E: Strafe Right
-        break;
-      case 16: // Shift: Increase Altitude
-        break;
-      case 17: // Control: Decrease Altitude
-        break;
-      default:
-        break;
-    }
+    simulation.update(Simulation.ACCEL_NONE,
+                Simulation.MOVE_NONE,
+                Simulation.MOVE_NONE,
+                Simulation.TURN_NONE);
   }
 }

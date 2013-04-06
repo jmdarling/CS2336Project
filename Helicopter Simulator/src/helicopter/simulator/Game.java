@@ -6,23 +6,19 @@ package helicopter.simulator;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
 
 /**
  *
  * @author jmdarling
  */
-class Game extends JFrame implements KeyListener {
-
+class Game implements KeyListener {
+  Simulation simulation;
   /**
    * Starts the game.
    *
    */
   public void start() {
-      JTextField keyText = new JTextField(80);
-      JLabel keyLabel = new JLabel("Press any key");
+      simulation = new Simulation();
   }
 
 
@@ -50,20 +46,32 @@ class Game extends JFrame implements KeyListener {
 
     switch(keyPressed) {
       case 87: // W: Forward
+        simulation.update(simulation.ACCEL_FORWARD,
+                simulation.MOVE_NONE, simulation.MOVE_NONE);
         break;
       case 65: // A: Rotate Counter Clockwise
         break;
       case 83: // S: Rotate Clockwise
         break;
       case 68: // D: Backward
+        simulation.update(simulation.ACCEL_BACK,
+                simulation.MOVE_NONE, simulation.MOVE_NONE);
         break;
       case 81: // Q: Strafe Left
+        simulation.update(simulation.ACCEL_NONE,
+                simulation.MOVE_LEFT, simulation.MOVE_NONE);
         break;
       case 69: // E: Strafe Right
+        simulation.update(simulation.ACCEL_NONE,
+                simulation.MOVE_RIGHT, simulation.MOVE_NONE);
         break;
       case 16: // Shift: Increase Altitude
+        simulation.update(simulation.ACCEL_NONE,
+                simulation.MOVE_NONE, simulation.MOVE_UP);
         break;
       case 17: // Control: Decrease Altitude
+        simulation.update(simulation.ACCEL_NONE,
+                simulation.MOVE_NONE, simulation.MOVE_DOWN);
         break;
       default:
         break;

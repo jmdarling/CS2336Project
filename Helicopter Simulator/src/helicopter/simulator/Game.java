@@ -6,13 +6,11 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
+ * Game.
  * Main class that controls program flow.
  *
  */
 class Game implements KeyListener {
-  private Simulation simulation;
-  private Renderer renderer;
-  private Timer timer;
   private boolean
           wStat,
           aStat,
@@ -22,8 +20,12 @@ class Game implements KeyListener {
           eStat,
           shiftStat,
           controlStat;
+//private Renderer renderer;
+  private Simulation simulation;
+  private Timer timer;
 
   /**
+   * start().
    * Starts the game.
    *
    */
@@ -31,11 +33,13 @@ class Game implements KeyListener {
       simulation = new Simulation();
       simulation.start();
 
-      renderer = new Renderer();
-      renderer.start();
+      //renderer = new Renderer();
+      //renderer.start();
+
+      System.out.println("Welcome to the helicopter simulator");
 
       timer = new Timer();
-      timer.schedule(new UpdatePositionTask(), 0, 30);
+      timer.schedule(new UpdatePositionTask(), 0, 100);
   }
 
   /**
@@ -47,56 +51,53 @@ class Game implements KeyListener {
 
     public void run() {
 
-      if(wStat) { // Forward
-        simulation.update(Simulation.ACCEL_FORWARD,
-                Simulation.MOVE_NONE,
-                Simulation.MOVE_NONE,
-                Simulation.TURN_NONE);
-      }
-      if(aStat) { // Rotate Counter-Clockwise
-        simulation.update(Simulation.ACCEL_NONE,
-                Simulation.MOVE_NONE,
-                Simulation.MOVE_NONE,
-                Simulation.TURN_LEFT);
-      }
-      if(sStat) { // Backward
-        simulation.update(Simulation.ACCEL_BACK,
-                Simulation.MOVE_NONE,
-                Simulation.MOVE_NONE,
-                Simulation.TURN_NONE);
-      }
-      if(dStat) { // Rorate Clockwise
-        simulation.update(Simulation.ACCEL_NONE,
-                Simulation.MOVE_NONE,
-                Simulation.MOVE_NONE,
-                Simulation.TURN_RIGHT);
-      }
-      if(qStat) { // Strafe Left
-        simulation.update(Simulation.ACCEL_NONE,
-                Simulation.MOVE_LEFT,
-                Simulation.MOVE_NONE,
-                Simulation.TURN_NONE);
-      }
-      if(eStat) { // Strafe Right
-        simulation.update(Simulation.ACCEL_NONE,
-                Simulation.MOVE_RIGHT,
-                Simulation.MOVE_NONE,
-                Simulation.TURN_NONE);
-      }
-      if(shiftStat) { // Increase Altitude
-        simulation.update(Simulation.ACCEL_NONE,
-                Simulation.MOVE_NONE,
-                Simulation.MOVE_UP,
-                Simulation.TURN_NONE);
-      }
-      if(controlStat) { // Decrease Altitude
-        simulation.update(Simulation.ACCEL_NONE,
-                Simulation.MOVE_NONE,
-                Simulation.MOVE_DOWN,
-                Simulation.TURN_NONE);
+      int accel = Simulation.ACCEL_NONE;
+      int moveLR = Simulation.MOVE_NONE;
+      int moveUD = Simulation.MOVE_NONE;
+      int turn = Simulation.TURN_NONE;
+
+      // Check for forward and backward movement.
+      if (wStat && sStat) { // These cancel each other out.
+        accel = Simulation.ACCEL_NONE;
+      } else if (wStat) {
+        accel = Simulation.ACCEL_FORWARD;
+      } else if (sStat) {
+        accel = Simulation.ACCEL_BACK;
       }
 
-      renderer.setPosition(new Position(simulation.getX(), simulation.getY(), simulation.getHeight(), simulation.getDirection()));
+      // Check for left and right movement.
+      if (qStat && eStat) {
+        moveLR = Simulation.MOVE_NONE;
+      } else if (qStat) {
+        moveLR = Simulation.MOVE_LEFT;
+      } else if (eStat) {
+        moveLR = Simulation.MOVE_RIGHT;
+      }
+
+      // Check for up and down movement.
+      if (controlStat && shiftStat) {
+        moveUD = Simulation.MOVE_NONE;
+      } else if (controlStat) {
+        moveUD = Simulation.MOVE_DOWN;
+      } else if (shiftStat) {
+        moveUD = Simulation.MOVE_UP;
+      }
+
+      // Check for left and right turning.
+      if (aStat && dStat) {
+        turn = Simulation.TURN_NONE;
+      } else if (aStat) {
+        turn = Simulation.TURN_LEFT;
+      } else if (dStat) {
+        turn = Simulation.TURN_RIGHT;
+      }
+
+      // Send the data to the physics simulator.
+      simulation.update(accel, moveLR, moveUD, turn);
+
+
+      // Recieve the updated coordinates from the physics simulator.
+      //renderer.setPosition(new Position(simulation.getX(), simulation.getY(), simulation.getHeight(), simulation.getDirection()));
     }
   }
 
@@ -205,7 +206,7 @@ class Position {
   private float xPos, yPos, height, direction;
 
   /**
-   * No-args constructor.
+   * No-arg constructor.
    *
    */
   public Position() {
@@ -305,5 +306,12 @@ class Position {
    */
   public float getDirection() {
     return direction;
+  }
+
+  public String toString() {
+    return "X-Pos: " + xPos +
+           "\nY-Pos: " + yPos +
+           "\nZ-Pos: " + height +
+           "\ndirection: " + direction;
   }
 }

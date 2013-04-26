@@ -49,6 +49,8 @@ class Game implements KeyListener {
    */
   class UpdatePositionTask extends TimerTask {
 
+
+    @Override
     public void run() {
 
       int accel = Simulation.ACCEL_NONE;
@@ -95,6 +97,8 @@ class Game implements KeyListener {
       // Send the data to the physics simulator.
       simulation.update(accel, moveLR, moveUD, turn);
 
+      // For debugging purposes only.
+      System.out.println(new Position(simulation.getX(), simulation.getY(), simulation.getHeight(), simulation.getDirection()));
 
       // Recieve the updated coordinates from the physics simulator.
       //renderer.setPosition(new Position(simulation.getX(), simulation.getY(), simulation.getHeight(), simulation.getDirection()));
